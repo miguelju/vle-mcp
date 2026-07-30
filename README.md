@@ -13,11 +13,14 @@ and explains the request; tested scientific software supplies the number.
 
 ## Status
 
-M0 (repository foundation) and M1 (minimum stdio server) are implemented and
-locally verified. The suite contains 19 tests, including an in-memory MCP
-round trip, a real stdio subprocess handshake, and the `vle-steam` standard
-atmosphere acceptance case. See [PLAN.md](PLAN.md) for architecture and
-[TODO.md](TODO.md) for verified status.
+M0 (repository foundation), M1 (minimum stdio server), and M2 (local-client
+interoperability) are implemented and locally verified. Verification includes
+an in-memory MCP round trip, a real stdio subprocess handshake, a standalone
+generic MCP client, and a Claude Desktop tool call for the `vle-steam`
+standard-atmosphere acceptance case. The current ChatGPT route and the decision
+not to claim a portable MCP Bundle are documented rather than overstated. See
+[PLAN.md](PLAN.md), [TODO.md](TODO.md), and
+[the M2 verification record](docs/m2-client-verification.md).
 
 ## Why MCP?
 
@@ -77,6 +80,7 @@ normalized pressure and IAPWS-IF97 provenance.
 .venv/bin/ruff check .
 .venv/bin/ruff format --check .
 .venv/bin/pytest
+.venv/bin/python scripts/verify_stdio_client.py --command .venv/bin/vle-mcp
 ```
 
 ## Security
@@ -88,7 +92,7 @@ transport.
 
 ## Authorship
 
-Miguel Jackson owns and directs the project. M0 and M1 were implemented
+Miguel Jackson owns and directs the project. M0 through M2 were implemented
 collaboratively by OpenAI Codex using the GPT-5.6 Sol model, following Miguel's
 instructions and approved plan. See [AUTHORS.md](AUTHORS.md) for the precise
 human/AI attribution and limitations.

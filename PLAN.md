@@ -130,7 +130,9 @@ larger attack surface.
 
 ## 7. Later milestones
 
-- M2: verified local-client configuration and desktop extension packaging.
+- M2: verified general stdio and Claude Desktop interoperability, current
+  ChatGPT connection requirements, and a documented MCP Bundle packaging
+  decision.
 - M3: Streamable HTTP, HTTPS, OAuth 2.1 resource-server behavior, and limits.
 - M4: the first bounded `stages-thermo` tool after an upstream API review.
 - M5: generic homelab, single-host, and managed-container deployment guides.

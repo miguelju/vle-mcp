@@ -2,7 +2,7 @@
 
 Checked items are verified claims, not estimates.
 
-M0 and M1 were implemented by OpenAI Codex using GPT-5.6 Sol under Miguel
+M0 through M2 were implemented by OpenAI Codex using GPT-5.6 Sol under Miguel
 Jackson's direction and approved plan.
 
 ## M0 — Repository foundation
@@ -34,10 +34,10 @@ Jackson's direction and approved plan.
 
 ## M2 — Local clients
 
-- [ ] Verify a general stdio client configuration.
-- [ ] Verify Claude Desktop configuration.
-- [ ] Evaluate desktop extension packaging.
-- [ ] Verify the current ChatGPT desktop/plugin path.
+- [x] Verify a general stdio client configuration.
+- [x] Verify Claude Desktop configuration.
+- [x] Evaluate desktop extension packaging.
+- [x] Verify the current ChatGPT desktop/plugin path.
 
 ## M3 — Remote clients
 
