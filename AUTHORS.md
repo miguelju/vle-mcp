@@ -12,5 +12,8 @@ implementation, documentation, and local verification under that direction.
 Codex is credited as an AI development collaborator, not as a legal author,
 copyright holder, repository account, or independent maintainer.
 
+The repository hero image was generated with OpenAI image generation through
+Codex under Miguel's direction.
+
 Future milestone records should name the human director, implementation agent,
 exact model identifier, verification evidence, and material limitations.

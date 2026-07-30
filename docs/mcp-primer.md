@@ -35,6 +35,9 @@ For “What is the boiling temperature of water at atmospheric pressure?”:
 
 The model does not calculate or “correct” the returned value.
 
+See [architecture.md](architecture.md) for the full component diagram, trust
+boundaries, typed result contract, and extension path to `stages-thermo`.
+
 ## Transport
 
 M1 uses stdio: a client starts the server as a child process and exchanges MCP

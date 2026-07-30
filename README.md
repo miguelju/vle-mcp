@@ -1,5 +1,7 @@
 # vle-mcp
 
+![vle-mcp architecture: an AI question passes through a typed MCP gateway to water and steam calculations and returns a structured result](assets/vle-mcp-hero.png)
+
 An educational Model Context Protocol server for the
 [`vle`](https://github.com/miguelju/vle) and
 [`stages-thermo`](https://github.com/miguelju/stages-thermo) scientific
@@ -28,7 +30,8 @@ separates natural-language reasoning from authoritative programs and data:
 - `vle-steam` performs the scientific calculation.
 
 See [docs/mcp-primer.md](docs/mcp-primer.md) for the protocol path and
-[PLAN.md](PLAN.md) for the Python and API-granularity decisions.
+[docs/architecture.md](docs/architecture.md) for the component architecture.
+[PLAN.md](PLAN.md) records the Python and API-granularity decisions.
 
 ## Development setup
 
