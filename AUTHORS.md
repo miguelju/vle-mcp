@@ -2,13 +2,14 @@
 
 This project is owned and directed by **Miguel Jackson**.
 
-Milestones M0 through M2 were designed and implemented collaboratively from
+Milestones M0 through M3 were designed and implemented collaboratively from
 Miguel's requirements by **OpenAI Codex using the GPT-5.6 Sol model**. Miguel
 specified the project goals, approved the implementation plan, selected Python
 as the integration language, and required the educational, security, and
 domain-API design emphasis. Codex performed the repository analysis,
 implementation, documentation, generic-client verification, and Claude Desktop
-interoperability check under that direction.
+interoperability check under that direction. M3 added the OAuth-protected
+Streamable HTTP application boundary and verified remote resource limits.
 
 Codex is credited as an AI development collaborator, not as a legal author,
 copyright holder, repository account, or independent maintainer.

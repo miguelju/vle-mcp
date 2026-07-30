@@ -92,3 +92,17 @@ The current ChatGPT product workflow is documented in
 Any client implementing MCP stdio can use M1. A chatbot that supports only
 provider-specific function calling needs an MCP client bridge; that bridge is
 client infrastructure, not part of the thermodynamic server.
+
+## Remote Streamable HTTP
+
+M3 clients connect to the externally visible HTTPS resource:
+
+```text
+https://mcp.example.com/mcp
+```
+
+The client discovers the authorization server through RFC 9728 Protected
+Resource Metadata, completes the authorization server's OAuth 2.1 flow, and
+sends a resource-bound bearer token with `vle:read`. Client secrets, access
+tokens, redirect URIs, and operator-specific settings must remain outside this
+repository. See [remote-http.md](remote-http.md) for the server contract.

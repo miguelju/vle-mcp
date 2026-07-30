@@ -14,15 +14,18 @@ repository.
 
 ## Security invariants
 
-- M1 tools are read-only and deterministic.
+- Tools are read-only and deterministic.
 - The server never executes shell commands or arbitrary code.
 - The server accepts no file paths, URLs, credentials, or user-supplied Python.
 - Pressure inputs are typed, finite, bounded, and normalized once.
 - Scientific calculation is delegated to the tested upstream library.
 - stdout carries MCP protocol traffic only.
 - Exceptions returned to clients contain no stack traces or local paths.
-- Secrets are injected at runtime if a future milestone needs them.
-- Remote transport is not enabled until authentication, authorization, TLS,
-  request limits, and threat tests are implemented together.
+- OAuth integration and TLS secrets are operator-supplied at runtime.
+- Remote transport requires bearer authentication, `vle:read`, HTTPS external
+  identifiers, host/origin checks, and bounded resource use.
+- Tokens are bound to the configured issuer and MCP resource and are never
+  forwarded to scientific libraries.
 
-See [docs/security-model.md](docs/security-model.md).
+See [docs/security-model.md](docs/security-model.md) and
+[docs/remote-http.md](docs/remote-http.md).

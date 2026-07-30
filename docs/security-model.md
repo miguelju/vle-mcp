@@ -42,20 +42,19 @@ Trusted but verified through tests:
 | Secret or topology disclosure | Repository scan plus review |
 | Dependency compromise | Bounded dependencies, lockfile/release review, minimal CI permissions |
 
-## Remote milestone requirements
+## M3 remote controls
 
-Do not expose the server remotely by merely switching transports. M3 must add:
+Do not expose the stdio server remotely or instantiate FastMCP directly.
+`create_remote_app` requires HTTPS issuer/resource identifiers and a maintained
+OAuth token verifier. The SDK enforces bearer authentication, `vle:read`,
+Protected Resource Metadata, and host/origin checks. The repository wrapper
+also requires verified issuer, resource, and expiry data and enforces body,
+rate, concurrency, and execution-time limits.
 
-- HTTPS;
-- OAuth 2.1-compatible authorization using maintained libraries;
-- PKCE for public clients;
-- Protected Resource Metadata;
-- issuer, signature, audience, expiry, and scope validation;
-- tokens bound to this MCP resource;
-- no token passthrough to downstream services;
-- short token lifetime and secure storage;
-- body, rate, concurrency, and execution-time limits;
-- origin/host validation, audit logs, and safe error handling.
+The authorization server and verifier must enforce OAuth 2.1 behavior,
+including PKCE for public clients, token signature, issuer, audience, expiry,
+and resource validation. Tokens are never forwarded to `vle-steam`. HTTPS and
+per-principal/distributed rate limiting belong at maintained ingress.
 
 MCP session IDs are routing state, not authentication.
 

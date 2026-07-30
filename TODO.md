@@ -2,7 +2,7 @@
 
 Checked items are verified claims, not estimates.
 
-M0 through M2 were implemented by OpenAI Codex using GPT-5.6 Sol under Miguel
+M0 through M3 were implemented by OpenAI Codex using GPT-5.6 Sol under Miguel
 Jackson's direction and approved plan.
 
 ## M0 — Repository foundation
@@ -41,9 +41,9 @@ Jackson's direction and approved plan.
 
 ## M3 — Remote clients
 
-- [ ] Add Streamable HTTP.
-- [ ] Add HTTPS and OAuth 2.1 resource-server guidance.
-- [ ] Add request-size, rate, concurrency, and timeout limits.
+- [x] Add Streamable HTTP.
+- [x] Add HTTPS and OAuth 2.1 resource-server guidance.
+- [x] Add request-size, rate, concurrency, and timeout limits.
 
 ## M4 — `stages-thermo`
 

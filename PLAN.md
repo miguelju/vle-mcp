@@ -133,12 +133,32 @@ larger attack surface.
 - M2: verified general stdio and Claude Desktop interoperability, current
   ChatGPT connection requirements, and a documented MCP Bundle packaging
   decision.
-- M3: Streamable HTTP, HTTPS, OAuth 2.1 resource-server behavior, and limits.
 - M4: the first bounded `stages-thermo` tool after an upstream API review.
 - M5: generic homelab, single-host, and managed-container deployment guides.
 - M6: release signing, SBOM, checksums, and public-repository hardening.
 
-## 8. Completion rule
+## 8. M3 — remote clients
+
+M3 adds a production-oriented ASGI application factory, not an embedded
+authorization server:
+
+- stateless Streamable HTTP with JSON responses at `/mcp`;
+- HTTPS-only external issuer and resource identifiers;
+- an operator-supplied `TokenVerifier` backed by a maintained OAuth 2.1
+  authorization server integration;
+- bearer-token enforcement with the `vle:read` scope;
+- exact issuer, resource, and expiry binding after cryptographic verification;
+- RFC 9728 Protected Resource Metadata;
+- host/origin validation and DNS-rebinding protection;
+- 64 KiB request bodies, 60 requests per 60 seconds, 8 concurrent requests,
+  and a 10-second request timeout by default.
+
+TLS certificates and private keys terminate at maintained HTTPS ingress and
+never enter this repository. The application-level rate limit protects one
+process; production ingress must additionally enforce per-principal and
+distributed limits. See [docs/remote-http.md](docs/remote-http.md).
+
+## 9. Completion rule
 
 Documentation is a claim and code is the fact. A milestone may be marked
 complete only after its implementation can be located, a test asserts the
