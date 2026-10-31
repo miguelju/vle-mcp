@@ -17,7 +17,8 @@ perform an operation.
 - **Resources** expose addressable context, similar to read-oriented data.
 - **Prompts** publish reusable interaction templates.
 
-M1 needs one tool and no resources or prompts.
+M1 needed one tool. The server now publishes 14 tools and still no resources or
+prompts.
 
 ## Example message path
 

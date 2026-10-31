@@ -9,6 +9,8 @@ import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+from vle_mcp.server import TOOLS
+
 
 def test_server_module_does_not_print_to_stdout() -> None:
     source = Path("src/vle_mcp/server.py").read_text(encoding="utf-8")
@@ -37,7 +39,7 @@ async def test_server_completes_a_real_stdio_handshake() -> None:
         async with ClientSession(read, write) as session:
             await session.initialize()
             tools = await session.list_tools()
-            assert {tool.name for tool in tools.tools} == {"water_saturation_temperature"}
+            assert {tool.name for tool in tools.tools} == {tool.__name__ for tool in TOOLS}
 
             result = await session.call_tool(
                 "water_saturation_temperature",

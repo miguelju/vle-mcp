@@ -3,7 +3,7 @@
 Checked items are verified claims, not estimates.
 
 M0 through M3 were implemented by OpenAI Codex using GPT-5.6 Sol under Miguel
-Jackson's direction and approved plan.
+Jackson's direction and approved plan. Later work is done with Claude Code.
 
 ## M0 — Repository foundation
 
@@ -45,11 +45,26 @@ Jackson's direction and approved plan.
 - [x] Add HTTPS and OAuth 2.1 resource-server guidance.
 - [x] Add request-size, rate, concurrency, and timeout limits.
 
-## M4 — Next `vle` tool
+## Tool catalogue — `vle-thermo` 0.18
 
-- [ ] Review `vle` API granularity beyond `vle.steam`.
-- [ ] Select one bounded, educational operation.
-- [ ] Define cost, units, convergence, and error contracts before implementation.
+Implemented by Claude Code (Claude Opus 5.5) under Miguel Jackson's direction.
+Tests: `tests/test_catalogue.py`.
+
+- [x] Pin `vle-thermo>=0.18,<0.19` and review its public API.
+- [x] Water: `water_saturation_properties`, `water_state` (`tools/water.py`).
+- [x] Components: `list_components`, `component_properties`
+      (`tools/components.py`).
+- [x] Mixtures: `mixture_flash`, `mixture_bubble_point`, `mixture_dew_point`,
+      `mixture_critical_point`, `mixture_phase_envelope`,
+      `mixture_phase_properties` (`tools/mixture.py`).
+- [x] Petroleum: `petroleum_fraction_properties`,
+      `petroleum_boiling_point_at_pressure`, `petroleum_normal_boiling_point`
+      (`tools/petroleum.py`).
+- [x] Validate inputs that vle silently accepts: compositions that do not
+      sum to one, and non-physical temperatures.
+- [x] Sanitize Rust engine panics (`BaseException`) as well as ordinary errors.
+- [x] Publish every tool with read-only annotations; assert it over MCP.
+- [x] Record excluded APIs and upstream defects in `docs/architecture.md`.
 
 ## M5/M6 — Deployment and releases
 

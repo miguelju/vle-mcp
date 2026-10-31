@@ -3,8 +3,10 @@
 ## Authorship
 
 This plan and the M0/M1 implementation were produced by OpenAI Codex using
-GPT-5.6 Sol under Miguel Jackson's direction and approval. Miguel is the project
-owner; Codex is recorded as an AI development collaborator. See `AUTHORS.md`.
+GPT-5.6 Sol under Miguel Jackson's direction and approval. The `vle`-only
+scoping and the tool catalogue (section 9) were produced with Claude Code
+(Claude Opus 5.5). Miguel is the project owner; the AI tools are recorded as
+development collaborators. See `AUTHORS.md`.
 
 ## 1. Purpose
 
@@ -75,7 +77,7 @@ user
   -> vle-mcp protocol layer
   -> typed tool model and validation
   -> domain adapter
-  -> vle.steam today; further vle APIs in later milestones
+  -> vle.steam, vle.components, vle.System, or vle.petroleum
   -> structured result with units and provenance
   -> chatbot explanation
 ```
@@ -84,8 +86,10 @@ Layers:
 
 - `server.py`: MCP registration and stdio lifecycle.
 - `models.py`: public, structured tool result schemas.
-- `tools/water.py`: unit validation and domain call.
-- `vle.steam`: authoritative Python binding over `vle-steam`.
+- `tools/common.py`: shared unit normalization, validation, and error sanitizing.
+- `tools/water.py`, `tools/components.py`, `tools/mixture.py`,
+  `tools/petroleum.py`: per-domain validation and domain calls.
+- `vle` (`vle-thermo`): the authoritative Python binding over the Rust engine.
 - tests: domain behavior and an in-memory MCP protocol round trip.
 
 ## 5. M0 — repository foundation
@@ -132,8 +136,6 @@ larger attack surface.
 - M2: verified general stdio and Claude Desktop interoperability, current
   ChatGPT connection requirements, and a documented MCP Bundle packaging
   decision.
-- M4: the next bounded `vle` tool beyond `vle.steam` after an upstream API
-  review.
 - M5: generic homelab, single-host, and managed-container deployment guides.
 - M6: release signing, SBOM, checksums, and public-repository hardening.
 
@@ -158,7 +160,28 @@ never enter this repository. The application-level rate limit protects one
 process; production ingress must additionally enforce per-principal and
 distributed limits. See [docs/remote-http.md](docs/remote-http.md).
 
-## 9. Completion rule
+## 9. Tool catalogue — `vle-thermo` 0.18
+
+The single-tool M1 scope was widened to the parts of the `vle-thermo` 0.18
+public API that are complete, bounded domain operations: water and steam
+(IAPWS-IF97), the bundled component database, multicomponent VLE through
+`vle.System` with an enumerated set of cubic equations of state, and
+petroleum-fraction characterization. Fourteen tools in total.
+
+Design rules:
+
+- one complete domain operation per tool; no batch/array calls, no solver
+  internals;
+- components only from the bundled database, at most 10 per call;
+- validate in the adapter whatever vle does not (composition sums, absolute
+  zero) and report the normalized input back;
+- every dependency failure, including a Rust panic, becomes a fixed public
+  message.
+
+The excluded APIs, the reason for each, and the upstream defects found during
+the review are listed in `docs/architecture.md` ("Tool catalogue").
+
+## 10. Completion rule
 
 Documentation is a claim and code is the fact. A milestone may be marked
 complete only after its implementation can be located, a test asserts the

@@ -1,27 +1,34 @@
 # Created by OpenAI Codex using GPT-5.6 Sol, under Miguel Jackson's direction.
+# Tool catalogue expanded by Claude Code (Claude Opus 5.5).
 """MCP construction and the local stdio entry point."""
+
+from collections.abc import Callable
 
 from mcp.server.auth.provider import TokenVerifier
 from mcp.server.auth.settings import AuthSettings
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import ToolAnnotations
 
-from vle_mcp.models import WaterSaturationTemperatureResult
-from vle_mcp.tools.water import PressureUnit, calculate_water_saturation_temperature
+from vle_mcp.tools import components, mixture, petroleum, water
 
+# Every tool is a deterministic, read-only calculation with no external access.
+_READ_ONLY = ToolAnnotations(
+    readOnlyHint=True,
+    destructiveHint=False,
+    idempotentHint=True,
+    openWorldHint=False,
+)
 
-def water_saturation_temperature(
-    pressure: float,
-    pressure_unit: PressureUnit = "kPa",
-) -> WaterSaturationTemperatureResult:
-    """Calculate water's boiling/saturation temperature at an absolute pressure.
+TOOLS: tuple[Callable[..., object], ...] = (
+    *water.TOOLS,
+    *components.TOOLS,
+    *mixture.TOOLS,
+    *petroleum.TOOLS,
+)
 
-    Use this for questions such as “What is the boiling temperature of water at
-    atmospheric pressure?” One standard atmosphere is 1 atm or 101.325 kPa
-    absolute. Do not use gauge pressure.
-    """
-
-    return calculate_water_saturation_temperature(pressure, pressure_unit)
+# Kept importable from this module for backward compatibility.
+water_saturation_temperature = water.water_saturation_temperature
 
 
 def create_mcp(
@@ -36,11 +43,14 @@ def create_mcp(
     """Build one server so stdio and HTTP expose exactly the same tools."""
 
     server = FastMCP(
-        "vle-steam",
+        "vle",
         instructions=(
-            "Use these read-only tools for water/steam thermodynamic calculations. "
-            "Do not estimate a value when a matching tool is available. All pressure "
-            "arguments are absolute."
+            "Read-only thermodynamic calculations backed by the vle library: water and "
+            "steam properties (IAPWS-IF97), a bundled pure-component database, "
+            "multicomponent vapor-liquid equilibrium with cubic equations of state, and "
+            "petroleum-fraction characterization. Do not estimate a value when a matching "
+            "tool is available. All pressure arguments are absolute. Call list_components "
+            "to find valid component names before a mixture calculation."
         ),
         token_verifier=token_verifier,
         auth=auth,
@@ -49,7 +59,8 @@ def create_mcp(
         json_response=json_response,
         max_request_body_size=max_request_body_size,
     )
-    server.tool()(water_saturation_temperature)
+    for tool in TOOLS:
+        server.tool(annotations=_READ_ONLY)(tool)
     return server
 
 

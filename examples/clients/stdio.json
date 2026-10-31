@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "vle-steam": {
+    "vle": {
       "command": "/path/to/venv/bin/vle-mcp",
       "args": []
     }

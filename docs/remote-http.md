@@ -1,6 +1,6 @@
 # M3 remote Streamable HTTP
 
-M3 exposes the same read-only tool over stateless MCP Streamable HTTP. The
+M3 exposes the same read-only tools over stateless MCP Streamable HTTP. The
 application is an ASGI factory rather than a public unauthenticated executable:
 
 ```python

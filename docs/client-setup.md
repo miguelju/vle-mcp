@@ -11,7 +11,7 @@ Use the installed executable:
 ```json
 {
   "mcpServers": {
-    "vle-steam": {
+    "vle": {
       "command": "/path/to/venv/bin/vle-mcp",
       "args": []
     }
@@ -42,7 +42,7 @@ preserving existing settings:
 ```json
 {
   "mcpServers": {
-    "vle-steam": {
+    "vle": {
       "command": "/path/to/venv/bin/vle-mcp",
       "args": []
     }
@@ -54,10 +54,22 @@ Use an absolute path in the private desktop configuration because the desktop
 application may not inherit the shell's `PATH`. Restart Claude Desktop after
 editing the file, then ask:
 
-> Use the vle-steam tool to calculate the saturation temperature of water at
+> Use the vle tools to calculate the saturation temperature of water at
 > 101.325 kPa absolute. State the returned Kelvin and Celsius values.
 
 The tool result should be approximately `373.1243 K` and `99.9743 degC`.
+
+To exercise the mixture tools, ask:
+
+> Using the vle tools with Peng-Robinson, flash 40% methane, 30% ethane, 20%
+> propane, and 10% n-butane at 250 K and 20 bar. What fraction vaporizes?
+
+The `mixture_flash` result should report a two-phase split with a vapor
+fraction of about `0.486`.
+
+The server was renamed from `vle-steam` to `vle` when the catalogue grew beyond
+steam. The `mcpServers` key is only a local label, so an existing `vle-steam`
+entry keeps working; rename it to match if you like.
 Review the tool-call prompt before approval. The server is read-only and does
 not require credentials.
 
