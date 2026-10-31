@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "vle-mcp"
 version = "0.1.0"
-description = "Educational MCP server for vle-steam and stages-thermo"
+description = "Educational MCP server for the vle thermodynamics library"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }

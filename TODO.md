@@ -45,9 +45,9 @@ Jackson's direction and approved plan.
 - [x] Add HTTPS and OAuth 2.1 resource-server guidance.
 - [x] Add request-size, rate, concurrency, and timeout limits.
 
-## M4 — `stages-thermo`
+## M4 — Next `vle` tool
 
-- [ ] Review upstream API granularity.
+- [ ] Review `vle` API granularity beyond `vle.steam`.
 - [ ] Select one bounded, educational operation.
 - [ ] Define cost, units, convergence, and error contracts before implementation.
 

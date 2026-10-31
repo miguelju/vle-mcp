@@ -28,7 +28,6 @@ flowchart LR
     S["vle-mcp server"]
     A["Typed MCP tool and validation layer"]
     V["vle-steam / vle-thermo"]
-    T["stages-thermo"]
     R["Structured numerical result"]
 
     U --> C
@@ -36,15 +35,14 @@ flowchart LR
     C -->|"tools/call"| S
     S --> A
     A --> V
-    A -. "Later column tools" .-> T
     V --> R
-    T --> R
     R --> C
     C --> U
 ```
 
-The solid `vle-steam / vle-thermo` path is implemented in M1. The dashed
-`stages-thermo` path is planned work, not a shipped capability.
+The `vle-steam / vle-thermo` path is implemented in M1. Today it exposes one
+tool, `water_saturation_temperature`; further `vle` tools are planned work, not
+shipped capabilities.
 
 ## Component responsibilities
 
@@ -55,7 +53,6 @@ The solid `vle-steam / vle-thermo` path is implemented in M1. The dashed
 | `vle-mcp` server | MCP lifecycle, capability publication, tool dispatch | Duplicated scientific algorithms |
 | Validation layer | Types, supported units, finite/range checks, canonicalization, public errors | Hidden corrections to domain results |
 | `vle-steam` / `vle-thermo` | Thermodynamic models and numerical correctness | Client-specific conversation behavior |
-| `stages-thermo` | Future staged-separation and column calculations | MCP transport |
 | Structured result | Values, units, basis, method, and library provenance | Natural-language speculation |
 
 ## Discovery: `tools/list`
@@ -187,9 +184,10 @@ The server assumes user text, model-selected arguments, client metadata, and
 dependency exception text may be hostile or malformed. M1 limits impact by
 being read-only, deterministic, file-system independent, and credential-free.
 
-Future `stages-thermo` tools must additionally bound:
+Future iterative `vle` tools (for example, multicomponent calculations) must
+additionally bound:
 
-- component and stage counts;
+- component counts;
 - solver time and concurrency;
 - convergence and cancellation behavior;
 - permitted models and operating specifications;
@@ -200,10 +198,10 @@ authorization requirements.
 
 ## Extension path
 
-`stages-thermo` joins at the typed domain-adapter boundary, not inside
-`vle-steam`. Each future column tool will undergo an API-granularity review
-before registration. The dashed edge in the diagram records that planned
-relationship without claiming it is currently callable.
+New `vle` capabilities join at the typed domain-adapter boundary, one module
+per domain area under `src/vle_mcp/tools/`. Each future tool will undergo an
+API-granularity review before registration; none is callable until it is
+registered, tested, and checked off in `TODO.md`.
 
 The transport, validation, and result conventions remain shared; the scientific
 engine behind a tool can change without changing how clients discover and call

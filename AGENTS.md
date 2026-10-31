@@ -21,8 +21,8 @@ connected to executable examples.
 - `PLAN.md` is the architectural plan; `TODO.md` is the status of record.
 - A checked item is a claim. Locate its implementation and test, run the test
   in the current session, and only then mark it complete.
-- Domain calculations belong in `vle` or `stages-thermo`; this repository
-  validates MCP inputs and adapts their granular APIs. Do not copy scientific
+- Domain calculations belong in `vle`; this repository validates MCP inputs
+  and adapts its granular APIs. Do not copy scientific
   equations here.
 - Run before proposing a commit:
 

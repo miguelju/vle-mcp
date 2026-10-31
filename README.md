@@ -5,9 +5,7 @@
 *Hero image generated with ChatGPT Images via OpenAI Codex (GPT-5.6 Sol).*
 
 An educational Model Context Protocol server for the
-[`vle`](https://github.com/miguelju/vle) and
-[`stages-thermo`](https://github.com/miguelju/stages-thermo) scientific
-libraries.
+[`vle`](https://github.com/miguelju/vle) scientific library.
 
 The first tool calculates the boiling temperature of water at an absolute
 pressure using `vle-steam`'s IAPWS-IF97 implementation. The chatbot interprets

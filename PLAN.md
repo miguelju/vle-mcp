@@ -9,9 +9,8 @@ owner; Codex is recorded as an AI development collaborator. See `AUTHORS.md`.
 ## 1. Purpose
 
 `vle-mcp` is a public learning repository that exposes selected capabilities
-from [`vle`](https://github.com/miguelju/vle) and
-[`stages-thermo`](https://github.com/miguelju/stages-thermo) through the Model
-Context Protocol (MCP).
+from [`vle`](https://github.com/miguelju/vle) through the Model Context
+Protocol (MCP).
 
 The first vertical slice answers a narrow question: the saturation (boiling)
 temperature of water at a specified absolute pressure. The number must come
@@ -26,7 +25,7 @@ language, and the thermodynamic engines remain in Rust, but it is the best
 teaching and integration layer here because:
 
 1. the official MCP Python SDK offers a compact, typed `FastMCP` server API;
-2. both upstream projects already provide Python bindings;
+2. `vle` already provides Python bindings;
 3. examples and tests are readable to the broadest AI/engineering audience;
 4. Python keeps protocol orchestration separate from high-performance Rust
    calculations.
@@ -76,7 +75,7 @@ user
   -> vle-mcp protocol layer
   -> typed tool model and validation
   -> domain adapter
-  -> vle.steam today; stages-thermo in later milestones
+  -> vle.steam today; further vle APIs in later milestones
   -> structured result with units and provenance
   -> chatbot explanation
 ```
@@ -133,7 +132,8 @@ larger attack surface.
 - M2: verified general stdio and Claude Desktop interoperability, current
   ChatGPT connection requirements, and a documented MCP Bundle packaging
   decision.
-- M4: the first bounded `stages-thermo` tool after an upstream API review.
+- M4: the next bounded `vle` tool beyond `vle.steam` after an upstream API
+  review.
 - M5: generic homelab, single-host, and managed-container deployment guides.
 - M6: release signing, SBOM, checksums, and public-repository hardening.
 
