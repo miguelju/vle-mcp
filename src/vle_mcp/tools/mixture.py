@@ -54,7 +54,8 @@ EquationOfState = Literal["PR", "SRK", "RK", "PRSV", "VdW", "Schmidt-Wenzel", "P
 # vle-thermo 0.18 computes mixture critical points only for two-parameter
 # cubics. Schmidt-Wenzel and Patel-Teja raise "unsupported"; van der Waals
 # panics inside the Rust engine (critical.rs, unwrap on None), so it is
-# excluded here until upstream fixes it.
+# excluded here until upstream fixes it:
+# https://github.com/miguelju/vle/issues/4
 CriticalPointEquationOfState = Literal["PR", "SRK", "RK", "PRSV"]
 Phase = Literal["liquid", "vapor"]
 
@@ -122,6 +123,7 @@ def validate_mixture(
     outside ``1 ± COMPOSITION_TOLERANCE`` is an error rather than a silent
     renormalization. Within tolerance, rounding (for example 0.33/0.33/0.34)
     is normalized and the normalized values are echoed in the result.
+    Upstream validation is tracked in https://github.com/miguelju/vle/issues/5.
     """
 
     if not min_components <= len(component_names) <= MAX_COMPONENTS:

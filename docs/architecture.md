@@ -250,7 +250,14 @@ Upstream behavior found during the review (vle-thermo 0.18.0):
 - `System.critical_point` raises "unsupported" for Schmidt-Wenzel and
   Patel-Teja, and **panics** for van der Waals (`critical.rs`, `unwrap` on
   `None`). `mixture_critical_point` therefore accepts only PR, SRK, RK, and
-  PRSV.
+  PRSV. Reported upstream as
+  [vle#4](https://github.com/miguelju/vle/issues/4).
+- `System` flash and saturation methods accept compositions that do not sum
+  to one, negative mole fractions, and non-positive temperatures and
+  pressures. Some of these calls return a plausible-looking result, others a
+  misleading solver error. `validate_mixture` and the temperature and pressure
+  bounds reject them first. Reported upstream as
+  [vle#5](https://github.com/miguelju/vle/issues/5).
 - No Peneloux volume shift is defined for VdW, Schmidt-Wenzel, or Patel-Teja,
   so `mixture_phase_properties` reports `mass_density` as null for those.
 
