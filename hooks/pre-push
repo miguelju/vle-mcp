@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+# Pre-push private-data gate.
+#
+# CANONICAL COPY: ~/.claude-config/scripts/repo-pre-push.sh. Each repo carries
+# its own copy at hooks/pre-push (copy it, don't symlink: the hook must travel
+# with the clone). Repo-specific patterns go in the EXTRA_PATTERNS array below.
+#
+# Blocks a push whose changes against the default branch:
+#   * add a private-key block (an added PEM header line FOLLOWED by an added
+#     base64 body line, so code and docs may mention the header text);
+#   * add a cloud / GitHub / Anthropic / 1Password / Tailscale / Slack token;
+#   * add a file that must never be committed: Claude Code's per-user
+#     .claude/settings.local.json (it stores every approved command verbatim,
+#     secrets included) or a bare .env.
+#
+# Install once per clone:   git config core.hooksPath hooks
+# Self-test (no push):      hooks/pre-push --self-test
+# Never bypass with --no-verify; fix the diff instead.
+set -euo pipefail
+
+# Repo-specific additions (ERE, BSD-grep compatible: no -P).
+EXTRA_PATTERNS=()
+
+# Reads a unified diff on stdin. Returns 0 when clean, 1 on a match.
+scan_diff() {
+    local diff
+    diff="$(cat)"
+    [ -z "$diff" ] && return 0
+
+    if printf '%s\n' "$diff" | awk '
+        /^\+.*-----BEGIN (RSA |EC |OPENSSH |DSA |ENCRYPTED )?PRIVATE KEY-----/ { armed = 1; next }
+        armed && /^\+[A-Za-z0-9+\/=]+[[:space:]]*$/ && length($0) > 40 { found = 1; exit }
+        { armed = 0 }
+        END { exit found ? 0 : 1 }'; then
+        echo "ABORT pre-push: the diff adds a private-key block" >&2
+        return 1
+    fi
+
+    local patterns=(
+        'aws_secret_access_key'
+        'AKIA[A-Z0-9]{16}'
+        '(ghp|gho|ghs|ghu|ghr)_[A-Za-z0-9]{36,}'
+        'github_pat_[A-Za-z0-9_]{50,}'
+        'sk-ant-[A-Za-z0-9_-]{30,}'
+        'ops_[A-Za-z0-9_-]{30,}'
+        'tskey-[a-z]+-[A-Za-z0-9-]{30,}'
+        'xox[bpoars]-[0-9]+-[0-9]+-[A-Za-z0-9]{20,}'
+    )
+    local pat
+    for pat in "${patterns[@]}" ${EXTRA_PATTERNS[@]+"${EXTRA_PATTERNS[@]}"}; do
+        if printf '%s\n' "$diff" | grep -E '^\+' | grep -qE "$pat"; then
+            echo "ABORT pre-push: the diff matches credential pattern: $pat" >&2
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Reads added file paths on stdin. Returns 0 when clean, 1 on a forbidden file.
+scan_names() {
+    local bad
+    bad="$(grep -E '(^|/)\.claude/settings\.local\.json$|(^|/)\.env$' || true)"
+    if [ -n "$bad" ]; then
+        echo "ABORT pre-push: these files must never be committed:" >&2
+        printf '  %s\n' $bad >&2
+        echo "Remove with: git rm --cached <file>, and add it to .gitignore" >&2
+        return 1
+    fi
+    return 0
+}
+
+if [ "${1:-}" = "--self-test" ]; then
+    tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    fail() { echo "self-test FAILED: $1" >&2; exit 1; }
+    # Fragments, so this file never contains a literal header or token.
+    H='-----BEGIN'; K='PRIVATE KEY-----'
+
+    ssh-keygen -q -t ed25519 -N '' -C 'prepush-selftest' -f "$tmp/key"
+    if { echo '+++ b/pasted.txt'; sed 's/^/+/' "$tmp/key"; } | scan_diff 2>/dev/null; then
+        fail "a generated private key was not blocked"
+    fi
+    printf '+    if s.hasPrefix("%s OPENSSH %s") {\n+| `%s RSA %s` | PEM |\n' "$H" "$K" "$H" "$K" \
+        | scan_diff || fail "header text without a body was blocked"
+    if printf '+t = %s\n' "gh""p_0123456789abcdefghijklmnopqrstuvwxyzAB" | scan_diff 2>/dev/null; then
+        fail "a GitHub token was not blocked"
+    fi
+    if printf '+k = %s\n' "sk-""ant-api03-0123456789abcdefghijklmnopqrstuv" | scan_diff 2>/dev/null; then
+        fail "an Anthropic key was not blocked"
+    fi
+    if printf -- '-t = %s\n' "gh""p_0123456789abcdefghijklmnopqrstuvwxyzAB" | scan_diff 2>/dev/null; then :; else
+        fail "a REMOVED token line was blocked (only added lines should count)"
+    fi
+    if printf '%s\n' 'src/a.py' '.claude/settings.local.json' | scan_names 2>/dev/null; then
+        fail "a committed .claude/settings.local.json was not blocked"
+    fi
+    if printf '%s\n' 'sub/.env' | scan_names 2>/dev/null; then
+        fail "a committed .env was not blocked"
+    fi
+    printf '%s\n' '.env.example' '.env.tpl' '.claude/settings.json' 'CLAUDE.md' \
+        | scan_names || fail "a safe file name was blocked"
+    echo "pre-push self-test passed"
+    exit 0
+fi
+
+# Real run: everything this push adds relative to the default branch, from the
+# merge base. hooks/ is excluded so the pattern list cannot self-match.
+base="$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)"
+if git rev-parse --verify --quiet "$base" >/dev/null; then
+    git diff --name-only --diff-filter=A "$base"...HEAD | scan_names
+    git diff "$base"...HEAD -- . ':(exclude)hooks/' | scan_diff
+else
+    git diff --cached --name-only --diff-filter=A | scan_names
+    git diff --cached -- . ':(exclude)hooks/' | scan_diff
+fi
